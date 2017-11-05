@@ -1,0 +1,54 @@
+//Este script da el contenido del objeto verificando la edad ddel avatar
+ 
+key Query;
+
+default
+{
+     
+  on_rez(integer X) {llResetScript();}
+    
+     touch_start(integer X)
+     {
+         llSay(0, "Verificando tu edad... "  );
+         Query = llRequestAgentData(llDetectedKey(0),DATA_BORN);
+     }
+    
+     dataserver(key QID,string Data)
+     {
+         if(QID == Query)
+         {
+             // a continuacion se determina los variles de Años, Dias y horas.
+            float YrDays = 365.25;
+             float MnDays = YrDays / 12;
+            float DyInc = 1 / MnDays;
+             // Esta es la edad del avatar.
+             integer uYr = (integer)llGetSubString(Data,0,3);
+            integer uMn = (integer)llGetSubString(Data,5,6);
+             integer uDy = (integer)llGetSubString(Data,8,9);
+             float uXVal = uYr * YrDays + (uMn - 1) * MnDays + uDy * DyInc;
+            // Get dia de hoy (actual)
+             Data = llGetDate();
+             integer Yr = (integer)llGetSubString(Data,0,3);
+             integer Mn = (integer)llGetSubString(Data,5,6);
+             integer Dy = (integer)llGetSubString(Data,8,9);
+             float XVal = Yr * YrDays + (Mn - 1) * MnDays + Dy * DyInc;
+             // Calculando la diferencia entre las fechas
+             integer DDiff = (integer)(XVal - uXVal);
+             // Aca se ve si el avatar cumple los requerimientos.
+            if(DDiff < 180) {
+                 llSay(0, "Hola! Bienvenido a Second Life! "  );
+ 
+                    if (llGetInventoryNumber(INVENTORY_NOTECARD) > 0){
+                        llGiveInventory(llDetectedKey(0), llGetInventoryName(INVENTORY_NOTECARD, 0));
+                    }
+ 
+ 
+            } else {
+                 llSay(0, "Eres muy viejo :C "  );
+            }
+            
+            llResetScript();
+         }
+     }
+ }
+ // Fin! //
